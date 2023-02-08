@@ -48,6 +48,36 @@ const addTask = (e) => {
         todoListRender(todos)
   }
 }
+
+const completedAdd = (e) => {
+    const atribute = e.srcElement.nextElementSibling
+    atribute.getAttribute("innerHTML")
+    const finTodo = atribute.innerText;
+    const lucasc =todos.find((element)=> element.todoName === finTodo); 
+    lucasc.state = "completed";
+    console.log(lucasc)
+    todoListRender(todos)
+}
+const deleteTask = (e) => {
+    const atribute = e.srcElement.previousElementSibling
+    atribute.getAttribute("innerHTML")
+    const finTodo = atribute.innerText;
+    console.log(e.srcElement.previousElementSibling);
+    const lucasc =todos.findIndex((element)=> element.todoName === finTodo);
+    todos.splice(lucasc, 1);
+    todoListRender(todos)
+    console.log(todos);
+}
+// const editingTask = (e) => {
+//     const findTodo = e.target.innerText;
+//     const lucasc =todos.find((element)=> element.todoName === findTodo); 
+//     lucasc.state = "editing";
+//     console.log(todos)
+//     todoListRender(todos)
+// }
+
+
+
 input.addEventListener('keydown',addTask)
  
 
@@ -78,14 +108,20 @@ const todoListRender = (todos) => {
         checkboxElement.setAttribute("type", "checkbox")
         // checkboxElement.setAttribute("class", "toggle")
         checkboxElement.classList.add("toggle")
-        // checkboxElement.setAttribute("checked", "")
+        checkboxElement.addEventListener("click",completedAdd)
+        if(todo.state === "completed"){
+            checkboxElement.setAttribute("checked", "")
+        }
+        
 
         const todoText = document.createElement("label")
         todoText.textContent = `${todo.todoName}`
+        todoText.addEventListener("dblclick", editingTask);
 
         const destroyButton = document.createElement("button")
         // destroyButton.setAttribute("class","destroy")
         destroyButton.classList.add("destroy")
+        destroyButton.addEventListener("click",deleteTask);
 
         todoElement.appendChild(checkboxElement)
         todoElement.appendChild(todoText)
@@ -101,8 +137,8 @@ const todoListRender = (todos) => {
          
 }
 
+todoListRender(todos)
 
-// todoListRender(todos)
 
 
 //fotter
