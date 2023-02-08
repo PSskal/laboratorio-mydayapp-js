@@ -35,42 +35,74 @@ headerContainer.appendChild(h1);
 headerContainer.appendChild(p);
 headerContainer.appendChild(input);
 
-input.addEventListener("input", (e) =>console.log(e.target.value))
+const todos = []
+
+
+const addTask = (e) => {
+    
+    if (e.key === "Enter") {
+        todos.push({todoName:`${e.target.value}`, state:null})
+        console.log(e.target.value)
+        e.target.value = "";
+        console.log(todos) 
+        todoListRender(todos)
+  }
+}
+input.addEventListener('keydown',addTask)
+ 
+
+
+
 // todoContainer
+const todoListRender = (todos) => {
+    //clean the todolist in dom after the previus render
+    while (todoList.firstChild) {
+        todoList.removeChild(todoList.firstChild);
+      }
 
-const li = document.createElement("li")
-// li.setAttribute("class", "completed");
-li.classList.add("completed");
-const todoElement = document.createElement("div")
-// todoElement.setAttribute("class", "view")
-todoElement.classList.add("view");
+    todos.forEach((todo) => {
+        console.log(todo)
+        const li = document.createElement("li")
+        // li.setAttribute("class", "completed");
+        li.classList.add(`${todo.state}`);
+        const todoElement = document.createElement("div")
+        // todoElement.setAttribute("class", "view")
+        todoElement.classList.add("view");
 
-const inputElement = document.createElement("input")
-// inputElement.setAttribute("class", "edit")
-inputElement.classList.add("edit");
-inputElement.setAttribute("value", "Learn Javascript")
+        const inputElement = document.createElement("input")
+        // inputElement.setAttribute("class", "edit")
+        inputElement.classList.add("edit");
+        inputElement.setAttribute("value", "Learn Javascript")
 
-const checkboxElement = document.createElement("input")
-checkboxElement.setAttribute("type", "checkbox")
-// checkboxElement.setAttribute("class", "toggle")
-checkboxElement.classList.add("toggle")
-checkboxElement.setAttribute("checked", "")
+        const checkboxElement = document.createElement("input")
+        checkboxElement.setAttribute("type", "checkbox")
+        // checkboxElement.setAttribute("class", "toggle")
+        checkboxElement.classList.add("toggle")
+        // checkboxElement.setAttribute("checked", "")
 
-const todoText = document.createElement("label")
-todoText.textContent = "Learn Javascript"
+        const todoText = document.createElement("label")
+        todoText.textContent = `${todo.todoName}`
 
-const destroyButton = document.createElement("button")
-// destroyButton.setAttribute("class","destroy")
-destroyButton.classList.add("destroy")
+        const destroyButton = document.createElement("button")
+        // destroyButton.setAttribute("class","destroy")
+        destroyButton.classList.add("destroy")
 
-todoElement.appendChild(checkboxElement)
-todoElement.appendChild(todoText)
-todoElement.appendChild(destroyButton)
+        todoElement.appendChild(checkboxElement)
+        todoElement.appendChild(todoText)
+        todoElement.appendChild(destroyButton)
 
-li.appendChild(todoElement)
-li.appendChild(inputElement)
-todoList.appendChild(li)
-todosSection.appendChild(todoList)
+        li.appendChild(todoElement)
+        li.appendChild(inputElement)
+        
+        todoList.appendChild(li)
+        todosSection.appendChild(todoList)
+       
+    }) 
+         
+}
+
+
+// todoListRender(todos)
 
 
 //fotter
