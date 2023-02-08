@@ -1,8 +1,4 @@
 // import "./css/base.css";
-
-
-
-
 console.log("hola manitos seguimos bien jajajaj");
 
 const section = document.querySelector(".todoapp");
@@ -50,13 +46,14 @@ const addTask = (e) => {
 }
 
 const completedAdd = (e) => {
-    const atribute = e.srcElement.nextElementSibling
-    atribute.getAttribute("innerHTML")
-    const finTodo = atribute.innerText;
-    const lucasc =todos.find((element)=> element.todoName === finTodo); 
-    lucasc.state = "completed";
-    console.log(lucasc)
+        const atribute = e.srcElement.nextElementSibling
+        atribute.getAttribute("innerHTML")
+        const finTodo = atribute.innerText;
+        const lucasc =todos.find((element)=> element.todoName === finTodo); 
+     (e.target.checked) ?lucasc.state = "completed" : lucasc.state=null;
     todoListRender(todos)
+
+    
 }
 const deleteTask = (e) => {
     const atribute = e.srcElement.previousElementSibling
@@ -68,21 +65,38 @@ const deleteTask = (e) => {
     todoListRender(todos)
     console.log(todos);
 }
-// const editingTask = (e) => {
-//     const findTodo = e.target.innerText;
-//     const lucasc =todos.find((element)=> element.todoName === findTodo); 
-//     lucasc.state = "editing";
-//     console.log(todos)
-//     todoListRender(todos)
-// }
+const editingTask = (e) => {
+    const findTodo = e.target.innerText;
+    const lucasc =todos.find((element)=> element.todoName === findTodo); 
+    lucasc.state = "editing";
+    lucasc.todoName = e.target.innerText;
+    console.log(e.target)
+    todoListRender(todos)
+}
+
+const renameTask = (e) => {
+    
+    if (e.key === "Enter") {
+        const findTodo = e.srcElement.defaultValue;
+        const lucasc =todos.find((element)=> element.todoName === findTodo); 
+        lucasc.todoName = e.target.value
+        lucasc.state = null;
+        todoListRender(todos)
+  }
+        
+}
+
+const clearCompletedTodos = (e) => {
+    console.log(e);
+    const lucasc =todos.filter((element)=> element.state === null); 
+    console.log({"borar":lucasc});
+    todoListRender(lucasc)
+}
 
 
 
 input.addEventListener('keydown',addTask)
  
-
-
-
 // todoContainer
 const todoListRender = (todos) => {
     //clean the todolist in dom after the previus render
@@ -102,13 +116,14 @@ const todoListRender = (todos) => {
         const inputElement = document.createElement("input")
         // inputElement.setAttribute("class", "edit")
         inputElement.classList.add("edit");
-        inputElement.setAttribute("value", "Learn Javascript")
+        inputElement.setAttribute("value", `${todo.todoName}`)
+        inputElement.addEventListener("keydown", renameTask)
 
         const checkboxElement = document.createElement("input")
         checkboxElement.setAttribute("type", "checkbox")
         // checkboxElement.setAttribute("class", "toggle")
         checkboxElement.classList.add("toggle")
-        checkboxElement.addEventListener("click",completedAdd)
+        checkboxElement.addEventListener("change",completedAdd)
         if(todo.state === "completed"){
             checkboxElement.setAttribute("checked", "")
         }
@@ -132,6 +147,7 @@ const todoListRender = (todos) => {
         
         todoList.appendChild(li)
         todosSection.appendChild(todoList)
+        
        
     }) 
          
@@ -144,16 +160,51 @@ todoListRender(todos)
 //fotter
 
 const contador = document.createElement("strong")
-contador.textContent = 12;
+contador.textContent = `${todos.length}`;
 todoCount.appendChild(contador)
 
-const routing = document.createElement("li")
-const route = document.createElement("a")
-route.setAttribute("href", "#/")
-route.textContent = "all"
-// route.setAttribute("class", "selected")
-route.classList.add("selected")
 
-routing.appendChild(route)
-filters.appendChild(routing)
+
+
+const footerList = [
+    {href:"#/",class:"selected", text: "all"},
+    {href:"#/",class: null, text: "pending"},
+    {href:"#/",class: null, text: "completed"}
+]
+
+const filtersBtn = (e) => {
+    const fil = e.target.textContent
+    footerList.find(element => element.text===`${fil}`)
+    if(fil === "all"){
+        todoListRender(todos)
+    }else if(fil === "pending"){
+        const pending =todos.filter((element)=> element.state === null); 
+        todoListRender(pending)
+    }else if(fil==="completed"){
+        const pending =todos.filter((element)=> element.state === "completed"); 
+        todoListRender(pending)
+    }
+}
+
+const footerRender = () => {
+    footerList.forEach((foo)=>{    const routing = document.createElement("li")
+    const route = document.createElement("a")
+    route.setAttribute("href", "#/")
+    route.textContent = `${foo.text}`
+    route.setAttribute("class", `${foo.class}`)
+    // route.classList.add("selected")
+    
+    route.addEventListener("click", filtersBtn)
+    
+    routing.appendChild(route)
+    filters.appendChild(routing)
+}
+    )
+    
+}
+
+footerRender()
+
+
+clearButton.addEventListener("click", clearCompletedTodos);
 
